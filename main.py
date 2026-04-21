@@ -16,6 +16,7 @@ def prompt(text):
 class Budget:
     def __init__(self):
         self.income = {}
+        self.expense = {}
         self.needs = {}
         self.wants = {}
 
@@ -29,22 +30,48 @@ class Budget:
             "amount":amount,
         }
 
+    def add_expense(self):
+        print("Lets add an expense.")
+        name = input("Enter a name for this expense:\n")
+        occDict = {
+            1:52,
+            2:12,
+            3:2,
+            4:1,
+        }
+        occurances = prompt("What type of expense is this?\n1.) Weekly\n2.) Monthly\n3.) Semi-Anually\n4.) Anually\n")
+        amount = prompt("How much?\n")
+        self.expense[name] = {
+            "occurances":occDict[occurances],
+            "amount":amount,
+        }
+
     def update(self):
         self.net_income = 0
+        self.net_expense = 0
         for key in self.income:
             self.net_income += self.income[key]["amount"] * self.income[key]["occurances"]
+        for key in self.expense:
+            self.net_expense += self.expense[key]["amount"] * self.expense[key]["occurances"]
     
     def __str__(self):
         self.update()
         rtn = f"+++++ Your Budget +++++\nTotal Income: {self.net_income:.2f}\n"
         for key in self.income:
-            rtn += key + " : " + str(self.income[key]["amount"]) + "\n"
+            rtn += key + " : " + f"{(self.income[key]["amount"]*self.income[key]["occurances"]):.2f}" + "\n"
+        rtn += f"\n\nTotal Expenses: {self.net_expense:.2f}\n"
+        for key in self.expense:
+            rtn += key + " : " + f"{(self.expense[key]["amount"]*self.income[key]["occurances"]):.2f}" + "\n"
         return rtn
 
 
 
 if __name__ == "__main__":
     myBudget = Budget()
+    myBudget.income["Honeywell"] = {
+            "occurances":400,
+            "amount":Decimal(39.63),
+    }
     while True:
         op = input(
             "\
@@ -56,6 +83,8 @@ Send 3 to see the state of your budget.\n"
         op = int(op)
         if op == 1:
             myBudget.add_income()
+        if op == 2:
+            myBudget.add_expense()
         if op == 3:
             print(myBudget)
 
